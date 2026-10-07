@@ -3,10 +3,11 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-IMG_SIZE = (500, 500)  # (width, height) ปรับตามต้องการ
+IMG_SIZE = (240, 300)
 
 def get_data(folder_path):
     data_x = []
+    file_names = []
     if not os.path.isfile(folder_path) and not folder_path.startswith("."):
         for file in os.listdir(folder_path):
             if file.endswith('.jpg'):
@@ -15,5 +16,6 @@ def get_data(folder_path):
                     continue
                 x = cv2.resize(x, IMG_SIZE)
                 data_x.append(x.flatten())
+                file_names.append(file)
         data_x = np.array(data_x)
-    return data_x
+    return data_x, file_names
