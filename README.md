@@ -20,7 +20,6 @@ Face_Custering/
 ├── main.py                  # entry point
 ├── data.py                  # image loading and preprocessing
 ├── calculate.py             # clustering algorithms
-├── plot.py                  # cluster plot
 ├── requirements.txt         # Python dependencies
 └── README.md
 ```
