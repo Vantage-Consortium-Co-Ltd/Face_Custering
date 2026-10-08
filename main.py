@@ -11,13 +11,13 @@ def main():
     print("Hard Mean Clustering Results:")
     for name, label in zip(file_names, result_hardmean):
         print(f"Name: {name}, Cluster: {label}")
-    plot_clusters(data_x, result_hardmean)
+   
 
-    result_softmean = soft_mean_calculate(data_x, k=3)
+    result_softmean = soft_mean_calculate(data_x, k=3, m=1.5)
     print("\nSoft Mean Clustering Results:")
     for name, label in zip(file_names, result_softmean):
         print(f"Name: {name}, Cluster: {label}")
-    plot_clusters(data_x, result_softmean)
+
     
 
 

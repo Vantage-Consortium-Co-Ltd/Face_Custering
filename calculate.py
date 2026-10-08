@@ -18,14 +18,11 @@ def custering_calculate(x, k):
     
     return idx
 
-def soft_mean_calculate(x, k):
-    m = 1.5
+def soft_mean_calculate(x, k, m=1.5):
     x = x.astype(np.float64)          # uint8 จะ overflow ตอนลบกัน และเก็บ centroid เป็นทศนิยมไม่ได้
     centroids = x[np.random.permutation(len(x))[:k]]
     mu = np.random.rand(len(x), k)
-    iteration = 0
     while True:
-        iteration += 1
         mu /= np.sum(mu, axis=1)[:, None]
         c_old = centroids.copy()
         for i in  range(k):
@@ -38,5 +35,4 @@ def soft_mean_calculate(x, k):
         if change < 1e-6:
             break
 
-    mu /= np.sum(mu, axis=1)[:, None]
     return np.argmax(mu, axis=1)
