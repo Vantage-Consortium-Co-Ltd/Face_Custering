@@ -1,7 +1,6 @@
 import os
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 
 IMG_SIZE = (240, 300)
 
