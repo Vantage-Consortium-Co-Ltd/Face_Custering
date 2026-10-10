@@ -1,24 +1,18 @@
 from data import get_data 
-from calculate import custering_calculate, soft_mean_calculate
-from plot import plot_clusters
+from operation import Custering
 
 def main():
     folder_path = "Dataset"
     data_x, file_names = get_data(folder_path)
     print("Data shape:", data_x.shape)
 
-    result_hardmean = custering_calculate(data_x, k=3)
+    clusting = Custering()
+    result_hardmean = clusting.kmeans_calculate(data_x, k=3)
     print("Hard Mean Clustering Results:")
     for name, label in zip(file_names, result_hardmean):
         print(f"Name: {name}, Cluster: {label}")
    
-
-    result_softmean = soft_mean_calculate(data_x, k=3, m=1.5)
-    print("\nSoft Mean Clustering Results:")
-    for name, label in zip(file_names, result_softmean):
-        print(f"Name: {name}, Cluster: {label}")
-
-    
+    clusting.group_custering(file_names, result_hardmean, folder_path, "Output")
 
 
 if __name__ == "__main__":
