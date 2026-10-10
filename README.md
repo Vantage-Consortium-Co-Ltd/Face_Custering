@@ -63,8 +63,6 @@ Example output:
 
 ```
 Data shape: (18, 72000)
-Change: 48.40
-Change: 4.95
 ...
 Change: 0.0
 Hard Mean Clustering Results:
