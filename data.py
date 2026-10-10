@@ -1,6 +1,6 @@
 import os
-import cv2
 import numpy as np
+import cv2
 
 IMG_SIZE = (240, 300)
 
@@ -11,7 +11,7 @@ def get_data(folder_path):
         for file in os.listdir(folder_path):
             if file.endswith('.jpg'):
                 x = cv2.imread(os.path.join(folder_path, file), cv2.IMREAD_GRAYSCALE)
-                if x is None:          # อ่านไฟล์ไม่ได้
+                if x is None:          
                     continue
                 x = cv2.resize(x, IMG_SIZE)
                 data_x.append(x.flatten())

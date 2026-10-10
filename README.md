@@ -1,13 +1,12 @@
 # Face_Custering
 
-Face image clustering implemented from scratch with NumPy. Two algorithms are provided: hard K-means and soft (fuzzy) mean.
+Face image clustering implemented from scratch with NumPy (hard K-means). The images are grouped into one output folder per cluster.
 
 ## How it works
 
 1. `get_data` reads every `.jpg` in the dataset folder as grayscale, resizes it to `IMG_SIZE` (default 240x300) and flattens it into one vector per image. It returns the vectors together with the file names, in the same order.
-2. `custering_calculate` runs K-means on those vectors (mean squared distance, random initial centroids) and returns the cluster index of each image.
-3. `soft_mean_calculate` runs soft-mean (fuzzy c-means) with fuzzifier `m = 1.5`, prints the centroid change on every iteration until it converges, and returns the cluster with the highest membership for each image.
-4. `plot_clusters` projects the image vectors to 2D with PCA and draws one colored point per cluster, with the centroids marked as X.
+2. `Custering.kmeans_calculate` runs K-means on those vectors (mean squared distance, random initial centroids), prints the centroid change on every iteration until it converges, and returns the cluster index of each image.
+3. `Custering.group_custering` reads each original image from the dataset folder with OpenCV and writes it to `Output/cluster_<n>/`, where `<n>` is the cluster index of that image.
 
 ## Project structure
 
@@ -17,19 +16,22 @@ Face_Custering/
 │   ├── example.jpg
 │   ├── example_2.jpg
 │   └── ...
+├── Output/                  # clustered images (git-ignored, created on run)
+│   ├── cluster_0/
+│   ├── cluster_1/
+│   └── ...
 ├── main.py                  # entry point
 ├── data.py                  # image loading and preprocessing
-├── calculate.py             # clustering algorithms
+├── operation.py             # clustering and output grouping
 ├── requirements.txt         # Python dependencies
 └── README.md
 ```
 
 | File | Description |
 |---|---|
-| `main.py` | Entry point: load data, run both clustering methods, print `Name: <file>, Cluster: <n>` and plot each result |
+| `main.py` | Entry point: load data, run K-means, print `Name: <file>, Cluster: <n>` and copy the images into `Output/` |
 | `data.py` | `get_data` (load and preprocess images, returns `data_x, file_names`) |
-| `calculate.py` | `custering_calculate` (K-means), `soft_mean_calculate` (soft mean) |
-| `plot.py` | `plot_clusters` (PCA 2D scatter plot of a clustering result) |
+| `operation.py` | `Custering` class: `kmeans_calculate` (K-means) and `group_custering` (write images into cluster folders) |
 | `requirements.txt` | Python dependencies |
 
 ## Dataset layout
@@ -43,7 +45,7 @@ Dataset/
 └── example_3.jpg
 ```
 
-The file name is what gets printed next to the cluster number, so name each file after the person or image you want to recognize in the output, for example `example.jpg`. The folder is git-ignored and is not included in the repository.
+The file name is what gets printed next to the cluster number, so name each file after the person or image you want to recognize in the output, for example `example.jpg`. The `Dataset/` and `Output/` folders are git-ignored and are not included in the repository.
 
 ## Setup
 
@@ -61,19 +63,26 @@ Example output:
 
 ```
 Data shape: (18, 72000)
+Change: 48.40
+Change: 4.95
+...
+Change: 0.0
 Hard Mean Clustering Results:
 Name: example.jpg, Cluster: 0
 Name: example_2.jpg, Cluster: 2
 ...
 ```
 
-Change the number of clusters with `k` in `main.py`, and the image size with `IMG_SIZE` in `data.py`.
+The images are then written to `Output/cluster_0/`, `Output/cluster_1/` and so on.
+
+Change the number of clusters with `k` in `main.py`, the output folder with the last argument of `group_custering`, and the image size with `IMG_SIZE` in `data.py`.
 
 ## Notes
 
 - All images are resized to the same size, otherwise the flattened vectors have different lengths and `np.array` fails.
-- Both algorithms start from random values, so cluster numbers (and sometimes the grouping) can differ between runs.
-- K-means: an empty cluster keeps its previous centroid.
-- Soft mean: with a large fuzzifier (`m = 2`) on raw pixels, all centroids can collapse to the overall mean and one cluster ends up empty. That is why `m` is set to 1.5.
+- K-means starts from random centroids, so cluster numbers (and sometimes the grouping) can differ between runs.
+- An empty cluster keeps its previous centroid.
+- Images in `Output/` are re-encoded by OpenCV (`imread` then `imwrite`), so they are saved in color but are not byte-identical copies of the originals.
+- `Output/` is not cleared between runs, so images from earlier runs stay in their old cluster folders. Delete it before re-running.
 - Raw pixels mostly capture lighting and background rather than identity, so clusters may not match people.
 - `.heif` and other non-`.jpg` files in `Dataset/` are skipped.
