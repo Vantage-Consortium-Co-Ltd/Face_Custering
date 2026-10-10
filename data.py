@@ -7,7 +7,12 @@ IMG_SIZE = (240, 300)
 def get_data(folder_path):
     data_x = []
     file_names = []
-    if not os.path.isfile(folder_path) and not folder_path.startswith("."):
+    if not os.path.exists(folder_path):
+        alt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), folder_path)
+        if os.path.exists(alt_path):
+            folder_path = alt_path
+
+    if os.path.isdir(folder_path):
         for file in os.listdir(folder_path):
             if file.endswith('.jpg'):
                 x = cv2.imread(os.path.join(folder_path, file), cv2.IMREAD_GRAYSCALE)
